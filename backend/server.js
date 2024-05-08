@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import ConnectMongoDB from './db/connectMongoDB.js';
 import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
+import postRoutes from './routes/post.routes.js';
 import cookieParser from 'cookie-parser';
 import {v2 as cloudinary} from 'cloudinary';
 const app=express();
@@ -21,7 +22,8 @@ app.use(express.urlencoded({extended: true})) //to parse form data
 app.use(cookieParser());
 
 app.use("/api/auth",authRoutes);
-app.use("/api/user",userRoutes)
+app.use("/api/user",userRoutes);
+app.use("/api/post",postRoutes);
 app.listen(PORT, ()=>{
     ConnectMongoDB();
     console.log(`Server running on port - ${PORT} `)

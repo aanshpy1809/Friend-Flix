@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import useUpdateProfile from "../../hooks/useUpdateProfile";
 
-const EditProfileModal = () => {
+const EditProfileModal = ({authUser}) => {
 	const [formData, setFormData] = useState({
 		fullName: "",
 		username: "",
@@ -11,9 +14,27 @@ const EditProfileModal = () => {
 		currentPassword: "",
 	});
 
+    const {updateProfile, isUpdatingProfile}=useUpdateProfile();
+
+    
+
 	const handleInputChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
+
+    useEffect(()=>{
+        if(authUser){
+            setFormData({
+                fullName: authUser.fullName,
+                username: authUser.username,
+                email: authUser.email,
+                newPassword: "",
+                currentPassword: "",
+                bio: authUser.bio,
+                link: authUser.link
+            })
+        }
+    },[authUser])
 
 	return (
 		<>
@@ -30,7 +51,7 @@ const EditProfileModal = () => {
 						className='flex flex-col gap-4'
 						onSubmit={(e) => {
 							e.preventDefault();
-							alert("Profile updated successfully");
+							updateProfile(formData);
 						}}
 					>
 						<div className='flex flex-wrap gap-2'>
@@ -94,7 +115,10 @@ const EditProfileModal = () => {
 							name='link'
 							onChange={handleInputChange}
 						/>
-						<button className='btn btn-primary rounded-full btn-sm text-white'>Update</button>
+						<button className='btn btn-primary rounded-full btn-sm text-white'>
+                            {isUpdatingProfile && "Updating..."}
+                            {!isUpdatingProfile && "Update"}
+                        </button>
 					</form>
 				</div>
 				<form method='dialog' className='modal-backdrop'>

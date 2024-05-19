@@ -77,8 +77,8 @@ export const comment=async(req,res)=>{
         }
         const comment ={user: userId, text}
         post.comments.push(comment);
-        await post.save();
-        res.status(201).json(post);
+        const dbpost=await post.save();
+        res.status(201).json(dbpost.comments);
     } catch (error) {
         console.log("Error in comments controller", error.message);
 		res.status(500).json({ error: error.message});
@@ -145,7 +145,7 @@ export const getLikedPosts=async(req,res)=>{
         const user=await User.findById(id);
         if(!user) return res.status(404).json({error: "User not found!"})
 
-        const posts=await Post.find({_id : {$in: user.likedPosts}}).populate({
+        const posts=await Post.find({_id : {$in: user.likedPosts}}).sort({createdAt: -1}).populate({
             path: "user",
             select: "-password"
         }).populate({

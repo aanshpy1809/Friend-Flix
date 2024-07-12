@@ -5,7 +5,7 @@ import Posts from "../../components/common/Posts";
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
 import EditProfileModal from "./EditProfileModal";
 
-import { POSTS } from "../../utils/db/dummy";
+
 
 import { FaArrowLeft } from "react-icons/fa6";
 import { IoCalendarOutline } from "react-icons/io5";
@@ -30,6 +30,8 @@ const ProfilePage = () => {
     const queryClient=useQueryClient();
 
     const {updateProfile, isUpdatingProfile}=useUpdateProfile();
+
+	
 
     const {data: user, isLoading, refetch, isRefetching} =useQuery({
         queryKey: ["user"],
@@ -84,7 +86,7 @@ const ProfilePage = () => {
 								</Link>
 								<div className='flex flex-col'>
 									<p className='font-bold text-lg'>{user?.fullName}</p>
-									<span className='text-sm text-slate-500'>{POSTS?.length} posts</span>
+									
 								</div>
 							</div>
 							{/* COVER IMG */}

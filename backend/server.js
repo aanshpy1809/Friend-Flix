@@ -5,10 +5,16 @@ import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
 import postRoutes from './routes/post.routes.js';
 import notificationRoutes from './routes/notification.routes.js'
+import unreadMessagesRoutes from './routes/unreadMessages.routes.js'
+import messageRoutes from './routes/message.routes.js';
 import cookieParser from 'cookie-parser';
 import path from 'path'
 import {v2 as cloudinary} from 'cloudinary';
-const app=express();
+import { app, server } from './socket/socket.js';
+
+
+
+
 dotenv.config();
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -25,7 +31,9 @@ app.use(cookieParser());
 app.use("/api/auth",authRoutes);
 app.use("/api/user",userRoutes);
 app.use("/api/post",postRoutes);
-app.use("/api/notifications",notificationRoutes)
+app.use("/api/notifications",notificationRoutes);
+app.use("/api/messages",messageRoutes);
+app.use("/api/unreadMessages",unreadMessagesRoutes);
 
 
 if (process.env.NODE_ENV === "production") {
@@ -36,7 +44,7 @@ if (process.env.NODE_ENV === "production") {
 	});
 }
 
-app.listen(PORT, ()=>{
+server.listen(PORT, ()=>{
     ConnectMongoDB();
     console.log(`Server running on port - ${PORT} `)
 })

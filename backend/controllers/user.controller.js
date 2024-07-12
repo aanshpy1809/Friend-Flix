@@ -17,6 +17,20 @@ export const getUserProfile=async(req,res)=>{
     }
 }
 
+export const getUserProfileById=async(req,res)=>{
+    try {
+        const {id}=req.params;
+        const user=await User.findById(id).select("-password");
+        if(!user){
+            return res.status(401).json({error: "User not found!"})
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        console.log("Error in getUserProfileById controller", error.message);
+		res.status(500).json({ error: error.message});
+    }
+}
+
 export const followUnfollowUser = async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -60,6 +74,18 @@ export const followUnfollowUser = async (req, res) => {
 	}
 };
 
+export const getUsers=async(req,res)=>{
+    try {
+        const userId=req.user._id;
+        const filteredUsers=await User.find({_id: {$ne: userId}}).select("_id username fullName profileImg");
+        res.status(200).json(filteredUsers);
+    } catch (error) {
+        console.log("Error in getUsers: ", error.message);
+		res.status(500).json({ error: error.message });
+    }
+    
+    
+}
 
 export const getSuggestedUser=async(req,res)=>{
     try {

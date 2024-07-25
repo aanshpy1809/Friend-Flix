@@ -140,10 +140,21 @@ const Post = ({ post }) => {
 						{isMyPost && (
 							<span className='flex justify-end flex-1'>
 								{!isPending && 
-                                <FaTrash className='cursor-pointer hover:text-red-500' onClick={handleDeletePost} />}
+                                <FaTrash className='cursor-pointer hover:text-red-500' onClick={()=>{document.getElementById('my_modal_1').showModal()}} />}
                                 {isPending && <LoadingSpinner size="sm"/>}
 							</span>
 						)}
+						<dialog id="my_modal_1" className="modal">
+							<div className="modal-box rounded-md bg-gray-800">
+								<p className="py-4">Are you sure you want to delete the post?</p>
+								<div className="modal-action">
+								<form method="dialog" >
+									<button className="btn rounded" onClick={handleDeletePost}>Delete</button>
+									<button className="btn rounded ml-2">Close</button>
+								</form>
+								</div>
+							</div>
+						</dialog>
 					</div>
 					<div className='flex flex-col gap-3 overflow-hidden'>
 						<span>{post.text}</span>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Messages from './Messages';
 import MessageInput from './MessageInput';
 import { Link, useParams } from 'react-router-dom';
@@ -7,10 +7,18 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import { FaArrowLeft } from 'react-icons/fa';
 
 
+
+
 const MessageContainer = () => {
     const { userId } = useParams();
     const defaultProfilePic = "https://www.gravatar.com/avatar/?d=mp";
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalImage, setModalImage] = useState('');
 
+    const handleImageClick = (imgSrc) => {
+        setModalImage(imgSrc);
+        setIsModalOpen(true);
+    };
     
     
     const { data: user, isLoading } = useQuery({
@@ -42,8 +50,9 @@ const MessageContainer = () => {
     if (isLoading) return <LoadingSpinner />;
 
     return (
+        <>
         <div className="flex w-full flex-col h-screen">
-            
+        
             <div className="bg-slate-500 flex gap-2 items-center px-4 py-2 mb-2">
                 <Link to="/chat">
                     <FaArrowLeft className="w-5 h-5" />
@@ -63,12 +72,15 @@ const MessageContainer = () => {
                 </div>
             </div>
             <div className="flex-1 overflow-y-auto">
-                <Messages reciever={user} />
+                <Messages reciever={user} handleImageClick={handleImageClick}/>
             </div>
             <div className="px-2 py-2">
                 <MessageInput reciever={user} />
             </div>
+            
         </div>
+        
+        </>
     );
 };
 

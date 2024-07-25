@@ -13,7 +13,7 @@ const Conversation = ({ conversation, lastIdx, lastMessage, unseenMessages }) =>
     const navigate = useNavigate();
     const {data: authUser}=useQuery({queryKey: ["authUser"]});
     const fromMe=lastMessage.senderId===authUser._id;
-    const unseenCount = unseenMessages?.messages[conversation._id]?.length || 0;
+    const unseenCount = unseenMessages?.messages[conversation?._id]?.length || 0;
     const hasUnseenMessages = unseenCount > 0;
 
     // const { mutate: messageSeen } = useMutation({
@@ -45,14 +45,14 @@ const Conversation = ({ conversation, lastIdx, lastMessage, unseenMessages }) =>
                 <div className={`avatar ${isOnline ? 'online' : ''}`}>
                     <div className='w-12 rounded-full'>
                         <img
-                            src={conversation.profileImg ? conversation.profileImg : defaultProfilePic}
+                            src={conversation?.profileImg ? conversation?.profileImg : defaultProfilePic}
                             alt='user avatar'
                         />
                     </div>
                 </div>
                 <div className='flex flex-col flex-1'>
                     <div className='flex gap-3 justify-between'>
-                        <p className='font-bold text-gray-200'>{conversation.fullName}</p>
+                        <p className='font-bold text-gray-200'>{conversation?.fullName}</p>
                     </div>
                     {lastMessage && fromMe && !lastMessage.chatGPT && (
                         // <p className='text-gray-300 text-sm'>

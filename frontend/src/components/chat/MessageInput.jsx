@@ -29,8 +29,8 @@ const MessageInput = ({ reciever }) => {
         },
         onSuccess: () => {
             
-            queryClient.invalidateQueries({ queryKey: ["Messages"] });
-            setImg("");
+            queryClient.invalidateQueries({ queryKey: ["Messages", reciever._id] });
+            console.log("success")
         }
     });
 
@@ -53,8 +53,9 @@ const MessageInput = ({ reciever }) => {
     };
 
     const handleSendImage = async () => {
-        await sendMessage({content: img, isImg: true}); 
         setImg('');
+        sendMessage({content: img, isImg: true}); 
+        
     };
 
     return (

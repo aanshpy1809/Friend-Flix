@@ -6,7 +6,7 @@ import notificationsound from "../../assets/sounds/notification.mp3";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 
-const Messages = ({ reciever }) => {
+const Messages = ({ reciever,handleImageClick }) => {
     const { socket } = useSocketContext();
     const [messages, setMessages]=useState([]);
     const queryClient=useQueryClient();
@@ -32,9 +32,9 @@ const Messages = ({ reciever }) => {
     const messagesEndRef = useRef(null);
 
     useEffect(() => {
-        if (!isLoading && messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
+        setTimeout(()=>{
+            messagesEndRef.current?.scrollIntoView({behaviour: "smooth"});
+        },100)
     }, [messages, isLoading]);
 
     useEffect(() => {
@@ -98,9 +98,11 @@ const Messages = ({ reciever }) => {
                 <p className="text-center">Send a message to start the conversation</p>
             )}
             {messages.map((message) => (
-                <Message key={message._id} message={message} reciever={reciever} />
+                <div key={message._id} ref={messagesEndRef}>
+                    <Message  message={message} receiver={reciever} handleImageClick={handleImageClick}  />
+                </div>
             ))}
-            <div ref={messagesEndRef} />
+            
         </div>
     );
 };

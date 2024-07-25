@@ -66,8 +66,8 @@ export const sendMessage=async(req,res)=>{
         if(recieverSocketId){
             io.to(recieverSocketId).emit("newMessage",newMessage);
         }
-
-        if(newMessage.message.startsWith("@gpt")){
+        
+        if(newMessage.message && newMessage.message.startsWith("@gpt")){
             const res=await openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
                 messages: [
@@ -85,7 +85,7 @@ export const sendMessage=async(req,res)=>{
             const chatGPTResponse=new Message({
                 senderId,
                 receiverId,
-                message: messageContent,
+                message: messageContent || "I'm sorry! I don't have a response for that",
                 img: "",
                 chatGPT: true
             });
@@ -102,8 +102,42 @@ export const sendMessage=async(req,res)=>{
             }
         }
 
+        if(newMessage.message && newMessage.message.startsWith("@dall-e")){
+            const res=await openai.images.generate({
+                model: 'dall-e-3',
+                prompt: newMessage.message,
+                n: 1,
+                size: "1024x1024"
+            });
+            const imageURL=res.data[0].url;
+            let image="";
+            if(imageURL){
+                const uploadedResponse= await cloudinary.uploader.upload(imageURL);
+                image=uploadedResponse.secure_url;
+            }
+            const chatGPTResponse=new Message({
+                senderId,
+                receiverId,
+                message: !imageURL ? "I'm sorry! I cannot generate this image": "",
+                img: image || "",
+                chatGPT: true
+            });
+            if(chatGPTResponse){
+                conversation.messages.push(chatGPTResponse._id);
+            }
+            await Promise.all([conversation.save(),chatGPTResponse.save()]);
+            const senderSocketId=getRecieverSocketId(senderId);
+            if(senderSocketId){
+                io.to(senderSocketId).emit("newMessage",chatGPTResponse);
+            }
+            if(recieverSocketId){
+                io.to(recieverSocketId).emit("newMessage",chatGPTResponse);
+            }
+
+        }
+
         res.status(201).json(newMessage);
-        // AI integration
+        
         
 
     } catch (error) {

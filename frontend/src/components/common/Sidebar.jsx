@@ -35,6 +35,22 @@ const Sidebar = () => {
         }
     });
 
+	const {data: notifications, isLoading}=useQuery({
+        queryKey: ["notifications"],
+        queryFn: async()=>{
+            try {
+                const res=await fetch("/api/notifications");
+                const data=await res.json();
+                if(!res.ok){
+                    throw new Error(data.error || "Something went wrong!");
+                }
+                return data;
+            } catch (error) {
+                throw new Error(error)
+            }
+        }
+    });
+
 
     const {data: authUser}=useQuery({queryKey: ['authUser']});
 
@@ -42,7 +58,8 @@ const Sidebar = () => {
 		<div className='md:flex-[2_2_0] w-18 max-w-52'>
 			<div className='sticky top-0 left-0 h-screen flex flex-col border-r border-gray-700 w-20 md:w-full'>
 				<Link to='/' className='flex justify-center md:justify-start'>
-					<XSvg className='px-2 w-12 h-12 rounded-full fill-white hover:bg-stone-900' />
+					{/* <XSvg className='px-2 w-12 h-12 rounded-full fill-white hover:bg-stone-900' /> */}
+					<img src='/ff-high-resolution-logo-transparent.svg' className="p-2 mt-2 h-20 " />
 				</Link>
 				<ul className='flex flex-col gap-3 mt-4'>
 					<li className='flex justify-center md:justify-start'>
@@ -70,6 +87,11 @@ const Sidebar = () => {
 						>
 							<IoNotifications className='w-6 h-6' />
 							<span className='text-lg hidden md:block'>Notifications</span>
+							{notifications && notifications.length>0 && (
+								<div className="hidden bg-red-500 text-white text-xs rounded-full w-6 h-6 lg:flex items-center justify-center">
+									{notifications.length}
+								</div>
+							)}
 						</Link>
 					</li>
 

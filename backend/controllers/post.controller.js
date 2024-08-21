@@ -78,6 +78,13 @@ export const comment=async(req,res)=>{
         const comment ={user: userId, text}
         post.comments.push(comment);
         const dbpost=await post.save();
+        const notification=new Notification({
+            from : userId,
+            to: post.user,
+            type: 'comment'
+        });
+
+        await notification.save();
         res.status(201).json(dbpost.comments);
     } catch (error) {
         console.log("Error in comments controller", error.message);

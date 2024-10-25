@@ -11,7 +11,7 @@ const server=http.createServer(app);
 
 const io=new Server(server, {
     cors: {
-        origin: ["http://localhost:3000"],
+        origin: ["https://twitter-clone-2-1lq3.onrender.com/"],
         methods: ["GET","POST"]
     },
 });
